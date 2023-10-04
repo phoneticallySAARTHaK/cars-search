@@ -76,15 +76,28 @@ async function init() {
       console.log("transaction errror", e);
     };
 
-    const map = new Map(storedData.map(({ id, ...data }) => [id, data]));
+    const storedDataMap = new Map(
+      storedData.map(({ id, ...data }) => [id, data])
+    );
+
+    const newDataMap = new Map(newData.map(({ id, ...data }) => [id, data]));
 
     const writeTranscation = db.transaction("cars", "readwrite");
     newData.forEach(
       (data) =>
-        void writeTranscation
-          .objectStore("cars")
-          .put({ ...data, isFavorite: Boolean(map.get(data.id)?.isFavorite) })
+        void writeTranscation.objectStore("cars").put({
+          ...data,
+          isFavorite: Boolean(storedDataMap.get(data.id)?.isFavorite),
+        })
     );
+
+    storedData
+      .filter((data) => {
+        !newDataMap.has(data.id);
+      })
+      .forEach(
+        (data) => void writeTranscation.objectStore("cars").delete(data.id)
+      );
 
     writeTranscation.commit();
     db.close();
@@ -125,6 +138,7 @@ class IDBRead extends Strategy {
               let matches = `${value.brand}${value.model}`
                 .toLowerCase()
                 .includes(q);
+
               if (isFavorite) {
                 matches = matches && value.isFavorite;
               }

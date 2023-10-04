@@ -7,15 +7,6 @@ import { Component as Root } from "./pages/Root";
 import { resultAction, resultLoader, rootLoader } from "./pages/loaders";
 import { ErrorBoundary } from "./pages/Error";
 
-const resultsRoute = {
-  index: true,
-  lazy() {
-    return import("./pages/Result");
-  },
-  loader: resultLoader,
-  action: resultAction,
-} as const;
-
 const router = createBrowserRouter([
   {
     path: "/",
@@ -25,11 +16,13 @@ const router = createBrowserRouter([
       {
         ErrorBoundary: ErrorBoundary,
         children: [
-          resultsRoute,
           {
-            ...resultsRoute,
-            index: false,
-            path: "/favorites",
+            index: true,
+            lazy() {
+              return import("./pages/Result");
+            },
+            loader: resultLoader,
+            action: resultAction,
           },
           {
             path: "*",

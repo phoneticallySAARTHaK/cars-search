@@ -13,7 +13,11 @@ export namespace api {
     isFavorite: boolean;
   };
 
-  export function fetchCars(q: string, page: string, isFavorite?: boolean) {
+  export function fetchCars(
+    q: string,
+    page: string,
+    isFavorite?: "true" | "false"
+  ) {
     return fetch(
       `/api?q=${q ?? ""}&page=${page ?? 1}&favorite=${isFavorite ?? "false"}`
     ).then((r) => r.json());

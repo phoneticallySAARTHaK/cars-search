@@ -55,6 +55,8 @@ export const CardSearchCard: FC<CardSearchCardProps> = ({
           fallbackSrc="https://via.placeholder.com/400x300"
           alt="Car Image"
           borderRadius="lg"
+          htmlWidth={400}
+          htmlHeight={300}
         />
         <Stack mt={4} spacing="3">
           <Flex justify="space-between">

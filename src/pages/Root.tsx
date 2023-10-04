@@ -1,6 +1,15 @@
-import { Box, Button, ChakraProps, Flex } from "@chakra-ui/react";
+import {
+  Box,
+  Button,
+  ChakraProps,
+  Flex,
+  FormControl,
+  FormLabel,
+  Switch,
+} from "@chakra-ui/react";
 import { SearchField } from "../components/SearchField/SearchField";
 import {
+  Form,
   NavLink,
   Outlet,
   useLoaderData,
@@ -9,9 +18,9 @@ import {
 } from "react-router-dom";
 import { Pagination } from "../components/Pagination/Pagination";
 import { RootLoaderData } from "./loaders";
-import { ChangeEvent } from "react";
+import { ChangeEvent, useEffect } from "react";
 import { debounce } from "../utils";
-import { AiOutlineHeart, AiFillHome } from "react-icons/ai";
+import { AiFillHome } from "react-icons/ai";
 
 export const Component = () => {
   const data = useLoaderData() as RootLoaderData;
@@ -29,21 +38,22 @@ export const Component = () => {
 
   const submit = useSubmit();
 
-  function handleChange(e: ChangeEvent<HTMLInputElement>) {
-    submit(e.target.form);
-  }
+  const handleChange = debounce(
+    (e: ChangeEvent<HTMLInputElement>) => void submit(e.target.form),
+    250
+  );
 
-  const [searchParams, setSearchParams] = useSearchParams();
+  const [searchParams] = useSearchParams();
 
   const isFavorite = searchParams.get("favorite") === "true";
+  const q = searchParams.get("q") ?? "";
 
-  function toggleFavorite() {
-    setSearchParams((prev) => {
-      return {
-        favorite: prev.get("favorite") !== "true" ? "true" : "false",
-      };
-    });
-  }
+  useEffect(() => {
+    const input = document.querySelector(
+      'input[name="q"]'
+    ) as HTMLInputElement | null;
+    if (input) input.value = q;
+  }, [q]);
 
   return (
     <Flex direction="column" h="100svh" p={4} bg="gray.200">
@@ -56,34 +66,45 @@ export const Component = () => {
           alignSelf="center"
           colorScheme="blue"
           variant="ghost"
-          backdropFilter="lighten(0%)"
         >
           <AiFillHome />
         </Button>
 
-        <Box as="form">
+        <Box as={Form} display="flex" flex="1">
           <SearchField
             containerProps={{ maxW: "calc(20rem + 10vw)" }}
             defaultValue={searchParams.get("q") ?? ""}
-            onChange={debounce(handleChange, 250)}
+            onChange={handleChange}
             name="q"
+            aria-label="Search Query"
           />
           <input type="hidden" name="page" value="1" />
-        </Box>
 
-        <Button
-          size="sm"
-          onClick={toggleFavorite}
-          title="toggle favorites"
-          alignSelf="center"
-          ml="auto"
-          colorScheme="blue"
-          variant={isFavorite ? "solid" : "outline"}
-          leftIcon={<AiOutlineHeart />}
-          backdropFilter="lighten(0%)"
-        >
-          Favorites
-        </Button>
+          <FormControl
+            display="flex"
+            alignItems="center"
+            gap={1}
+            justifyContent="end"
+          >
+            <FormLabel htmlFor="favorite" m={0}>
+              Favorite
+            </FormLabel>
+            <Switch
+              id="favorite"
+              defaultChecked={isFavorite}
+              name="favorite"
+              value={(!isFavorite).toString()}
+              onChange={(e: ChangeEvent<HTMLInputElement>) => {
+                const formData = new FormData(e.target.form!);
+
+                formData.set("q", "");
+                formData.set("page", "1");
+
+                void submit(formData);
+              }}
+            />
+          </FormControl>
+        </Box>
       </Flex>
 
       <Outlet />
