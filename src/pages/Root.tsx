@@ -1,7 +1,6 @@
 import { Box, Button, ChakraProps, Flex } from "@chakra-ui/react";
 import { SearchField } from "../components/SearchField/SearchField";
 import {
-  Link,
   NavLink,
   Outlet,
   useLoaderData,
@@ -41,7 +40,6 @@ export const Component = () => {
   function toggleFavorite() {
     setSearchParams((prev) => {
       return {
-        ...Object.fromEntries(prev.entries()),
         favorite: prev.get("favorite") !== "true" ? "true" : "false",
       };
     });
@@ -49,7 +47,7 @@ export const Component = () => {
 
   return (
     <Flex direction="column" h="100svh" p={4} bg="gray.200">
-      <Flex as="header" zIndex={1} gap={4} {...commonProps}>
+      <Flex as="header" zIndex={1} gap={4} {...commonProps} flexWrap="wrap">
         <Button
           size="sm"
           as={NavLink}
@@ -58,6 +56,7 @@ export const Component = () => {
           alignSelf="center"
           colorScheme="blue"
           variant="ghost"
+          backdropFilter="lighten(0%)"
         >
           <AiFillHome />
         </Button>
@@ -81,6 +80,7 @@ export const Component = () => {
           colorScheme="blue"
           variant={isFavorite ? "solid" : "outline"}
           leftIcon={<AiOutlineHeart />}
+          backdropFilter="lighten(0%)"
         >
           Favorites
         </Button>

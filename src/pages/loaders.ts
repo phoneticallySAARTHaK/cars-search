@@ -48,6 +48,6 @@ export async function resultAction({
   request,
 }: ActionFunctionArgs): Promise<unknown> {
   return api.toggleFavorite(
-    ((await request.formData()).get("id") ?? "") as string
+    ((await request.formData()).get("id") ?? "0") as string
   );
 }

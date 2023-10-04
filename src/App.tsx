@@ -4,9 +4,17 @@ import {
   redirect,
 } from "react-router-dom";
 import { Component as Root } from "./pages/Root";
-import { Component as Result } from "./pages/Result";
 import { resultAction, resultLoader, rootLoader } from "./pages/loaders";
 import { ErrorBoundary } from "./pages/Error";
+
+const resultsRoute = {
+  index: true,
+  lazy() {
+    return import("./pages/Result");
+  },
+  loader: resultLoader,
+  action: resultAction,
+} as const;
 
 const router = createBrowserRouter([
   {
@@ -17,23 +25,11 @@ const router = createBrowserRouter([
       {
         ErrorBoundary: ErrorBoundary,
         children: [
+          resultsRoute,
           {
-            index: true,
-            Component: Result,
-            loader: resultLoader,
-            action: resultAction,
-            shouldRevalidate: () => {
-              return false;
-            },
-          },
-          {
+            ...resultsRoute,
+            index: false,
             path: "/favorites",
-            Component: Result,
-            loader: resultLoader,
-            action: resultAction,
-            shouldRevalidate: () => {
-              return false;
-            },
           },
           {
             path: "*",

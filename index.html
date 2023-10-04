@@ -2,9 +2,31 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+    <link rel="icon" type="image/png" href="/logo.png" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Car Search</title>
+
+    <meta name="color-scheme" content="only light" />
+    <meta name="description" content="Car Search" />
+    <link rel="manifest" href="/manifest.json" />
+    <title>Cars Search</title>
+    <script>
+      if ("serviceWorker" in navigator) {
+        navigator.serviceWorker.addEventListener("controllerchange", () =>
+          location.reload()
+        );
+
+        navigator.serviceWorker.getRegistration().then((reg) => {
+          reg.addEventListener("updatefound", () => {
+            if (reg.installing) {
+              reg.installing.addEventListener(
+                "statechange",
+                (e) => void e.target.postMessage({ type: "SKIP_WAITING" })
+              );
+            }
+          });
+        });
+      }
+    </script>
   </head>
   <body>
     <div id="root"></div>
