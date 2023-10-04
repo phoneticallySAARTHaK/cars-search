@@ -11,8 +11,7 @@ export default defineConfig({
       filename: "sw.ts",
       srcDir: "src/",
       outDir: "dist/",
-      registerType: "autoUpdate",
-      injectRegister: "inline",
+      injectRegister: null,
       injectManifest: {
         globPatterns: ["**/*.{js,css,html,json}"],
       },

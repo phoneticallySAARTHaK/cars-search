@@ -11,19 +11,23 @@
     <title>Cars Search</title>
     <script>
       if ("serviceWorker" in navigator) {
-        navigator.serviceWorker.addEventListener("controllerchange", () =>
-          location.reload()
-        );
+        window.addEventListener("load", () => {
+          navigator.serviceWorker
+            .register("/sw.js", { scope: "/" })
+            .then((reg) => {
+              reg.addEventListener("updatefound", () => {
+                if (reg.installing) {
+                  reg.installing.addEventListener(
+                    "statechange",
+                    (e) => void e.target.postMessage({ type: "SKIP_WAITING" })
+                  );
+                }
+              });
+            });
 
-        navigator.serviceWorker.getRegistration().then((reg) => {
-          reg.addEventListener("updatefound", () => {
-            if (reg.installing) {
-              reg.installing.addEventListener(
-                "statechange",
-                (e) => void e.target.postMessage({ type: "SKIP_WAITING" })
-              );
-            }
-          });
+          navigator.serviceWorker.addEventListener("controllerchange", () =>
+            location.reload()
+          );
         });
       }
     </script>
