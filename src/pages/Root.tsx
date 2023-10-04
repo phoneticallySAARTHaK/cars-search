@@ -40,14 +40,17 @@ export const Component = () => {
 
   const handleInputChange = debounce((e: ChangeEvent<HTMLInputElement>) => {
     const formData = new FormData(e.target.form!);
-    const favorite = formData.get("favorite") === "true";
-    formData.set("favorite", (!favorite).toString());
+
+    console.log(formData.get("favorite"));
+    // const favorite = formData.get("favorite") === "true";
+
+    // formData.set("favorite", (!favorite).toString());
     submit(formData);
   }, 250);
 
   const [searchParams] = useSearchParams();
 
-  const isFavorite = searchParams.get("favorite") === "true";
+  const isFavorite = searchParams.has("favorite");
   const q = searchParams.get("q") ?? "";
 
   useEffect(() => {
@@ -95,9 +98,9 @@ export const Component = () => {
               id="favorite"
               defaultChecked={isFavorite}
               name="favorite"
-              value={(!isFavorite).toString()}
               onChange={(e: ChangeEvent<HTMLInputElement>) => {
                 const formData = new FormData(e.target.form!);
+                console.log(formData.get("favorite"));
 
                 formData.set("q", "");
                 formData.set("page", "1");

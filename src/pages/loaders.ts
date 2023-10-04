@@ -31,12 +31,12 @@ export async function resultLoader({
   request,
 }: LoaderFunctionArgs): Promise<api.CarDetails[]> {
   const url = new URL(request.url);
-  const isFavorite = url.searchParams.get("favorite") === "true";
+  const isFavorite = url.searchParams.has("favorite");
 
   const res = await api.fetchCars(
     url.searchParams.get("q") ?? "",
     url.searchParams.get("page") ?? "1",
-    isFavorite.toString() as "true" | "false"
+    isFavorite
   );
 
   if (!res || !Array.isArray(res) || !res.length)

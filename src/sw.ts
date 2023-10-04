@@ -107,7 +107,7 @@ async function init() {
 class IDBRead extends Strategy {
   protected async _handle(request: Request): Promise<Response | undefined> {
     const url = new URL(request.url);
-    const isFavorite = url.searchParams.get("favorite") === "true";
+    const isFavorite = url.searchParams.has("favorite");
     const q = (url.searchParams.get("q") ?? "").toLowerCase();
     const page = parseInt(url.searchParams.get("page") ?? "1") - 1;
 
