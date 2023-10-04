@@ -1,0 +1,7 @@
+*:not(.allow-scroll) {
+  scrollbar-width: 0;
+}
+
+:not(.allow-scroll)::-webkit-scrollbar {
+  display: none;
+}
