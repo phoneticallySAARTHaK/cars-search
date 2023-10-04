@@ -38,10 +38,12 @@ export const Component = () => {
 
   const submit = useSubmit();
 
-  const handleChange = debounce(
-    (e: ChangeEvent<HTMLInputElement>) => void submit(e.target.form),
-    250
-  );
+  const handleInputChange = debounce((e: ChangeEvent<HTMLInputElement>) => {
+    const formData = new FormData(e.target.form!);
+    const favorite = formData.get("favorite") === "true";
+    formData.set("favorite", (!favorite).toString());
+    submit(formData);
+  }, 250);
 
   const [searchParams] = useSearchParams();
 
@@ -74,7 +76,7 @@ export const Component = () => {
           <SearchField
             containerProps={{ maxW: "calc(20rem + 10vw)" }}
             defaultValue={searchParams.get("q") ?? ""}
-            onChange={handleChange}
+            onChange={handleInputChange}
             name="q"
             aria-label="Search Query"
           />
